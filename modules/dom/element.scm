@@ -29,7 +29,9 @@
             replace-with!
             set-attribute!
             remove-attribute!
-            clone-element))
+            clone-element
+            element-checked?
+            set-element-checked!))
 
 (define-foreign element-value
   "element" "value"
@@ -58,7 +60,7 @@
 (define-foreign replace-with!
   "element" "replaceWith"
   (ref extern) (ref extern) -> none)
-(define-foreign set-attribute!
+(define-foreign %set-attribute!
   "element" "setAttribute"
   (ref extern) (ref string) (ref string) -> none)
 (define-foreign remove-attribute!
@@ -67,3 +69,17 @@
 (define-foreign clone-element
   "element" "clone"
   (ref extern) -> (ref extern))
+
+(define-foreign %element-checked?
+  "element" "checked"
+  (ref null extern) -> i32)
+(define (element-checked? elem)
+  (= (%element-checked? elem) 1))
+
+(define-foreign set-element-checked!
+  "element" "setChecked"
+  (ref null extern) i32 -> none)
+(define (set-attribute! elem name val)
+  (if (string=? name "checked")
+        (set-element-checked! elem (if val 1 0))
+      (%set-attribute! elem name val)))

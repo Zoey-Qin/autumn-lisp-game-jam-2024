@@ -28,11 +28,15 @@ window.addEventListener("load", async () => {
           removeAttribute: (elem, name) => elem.removeAttribute(name),
           remove: (elem) => elem.remove(),
           replaceWith: (oldElem, newElem) => oldElem.replaceWith(newElem),
-          clone: (elem) => elem.cloneNode()
+          clone: (elem) => elem.cloneNode(),
+          checked(elem) { return elem.checked; },
+          setChecked(elem, checked) { elem.checked = (checked == 1); },
+
         },
         event: {
           addEventListener: (target, type, listener) => target.addEventListener(type, listener),
           removeEventListener: (target, type, listener) => target.removeEventListener(type, listener),
+          target(event) { return event.target; },
           preventDefault: (event) => event.preventDefault(),
           keyboardCode: (event) => event.code
         },
