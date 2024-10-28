@@ -27,6 +27,25 @@
              (hoot hashtables)
              (ice-9 match))
 
+
+(define *template* '())
+(define (wrap-template template)
+  `(div (@ (id "container"))
+    (button (@ (click ,(lambda (event)
+                            (set! *template* template-click)
+                            (render))))
+                "Click")
+    (button (@ (click ,(lambda (event)
+                            (set! *template* template-task)
+                            (render))))
+                "Task")
+    (div (@ (id "application")) ,(template))))
+
+(define (render)
+  (let ((old (get-element-by-id "container")))
+    (unless (external-null? old) (remove! old))
+  (append-child! (document-body) (sxml->dom (wrap-template *template*)))))
+
 (define (sxml->dom exp)
   (match exp
     ;; The simple case: a string representing a text node.
@@ -67,10 +86,8 @@
          (children (add-children children)))
        elem))))
 
-(define *clicks* 0)
-(define *template* '())
-
 ;; Click
+(define *clicks* 0)
 (define (template-click)
   `(div
     (p ,(number->string *clicks*) " clicks")
@@ -80,11 +97,6 @@
                 "Click me!")))
 
 ;; Task
-(define (render)
-  (let ((old (get-element-by-id "container")))
-    (unless (external-null? old) (remove! old))
-  (append-child! (document-body) (sxml->dom (wrap-template *template*)))))
-
 (define-record-type <task>
   (make-task name done?)
   task?
@@ -92,10 +104,8 @@
   (done? task-done? set-task-done!))
 
 (define *tasks* '())
-
 (define (add-task! task)
   (set! *tasks* (cons task *tasks*)))
-
 (define (remove-task! task)
   (set! *tasks* (delq task *tasks*)))
 
@@ -109,12 +119,10 @@
                                 (render))))
                    (checked ,(task-done? task))))
          (span (@ (style "padding: 0 1em 0 1em;"))
-               ;; Strikethrough if task is done.
                ,(if (task-done? task)
                     `(s ,(task-name task))
                     (task-name task)))
          (a (@ (href "#")
-               ;; Remove task on click.
                (click ,(lambda (event)
                          (remove-task! task)
                          (render))))
@@ -136,17 +144,5 @@
             "Add task")))
 
 ;; Main
-(define (wrap-template template)
-  `(div (@ (id "container"))
-    (button (@ (click ,(lambda (event)
-                            (set! *template* template-click)
-                            (render))))
-                "Click")
-    (button (@ (click ,(lambda (event)
-                            (set! *template* template-task)
-                            (render))))
-                "Task")
-    (div (@ (id "application")) ,(template))))
-
 (set! *template* template-task)
 (render)
