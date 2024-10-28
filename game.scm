@@ -22,9 +22,12 @@
              (dom document)
              (dom element)
              (dom event)
+             (dom window)
              (math vector)
              (hoot ffi)
+             (hoot debug)
              (hoot hashtables)
+             (srfi srfi-9)
              (ice-9 match))
 
 
@@ -145,4 +148,34 @@
 
 ;; Main
 (set! *template* template-task)
+
+(define *update-list* '())
+(define dt (/ 1000.0 60.0))
+
+(define-record-type <timeout-function>
+  (make-timeout-function interval countdown func)
+  timeout-function?
+  (interval timeout-function-interval set-timeout-function-interval!)
+  (countdown timeout-function-countdown set-timeout-function-countdown!)
+  (func timeout-function-func))
+
+(define (plus-clicks)
+  (set! *clicks* (+ *clicks* 1)))
+
+(set! *update-list* (append *update-list* (list (make-timeout-function 60 60 plus-clicks))))
+
+(define (update)
+  (for-each (lambda (i)
+              (dprint "countdown" (timeout-function-countdown i))
+              (if (= (timeout-function-countdown i) 0)
+                  (begin
+                    ((timeout-function-func i))
+                    (set-timeout-function-countdown! i (timeout-function-interval i))
+                    (render))
+                  (set-timeout-function-countdown! i (- (timeout-function-countdown i) 1))))
+            *update-list*)
+  (timeout update-callback dt))
+
+(define update-callback (procedure->external update))
 (render)
+(timeout update-callback dt)
