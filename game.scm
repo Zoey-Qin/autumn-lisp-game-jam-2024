@@ -42,6 +42,10 @@
                             (set! *template* template-task)
                             (render))))
                 "Task")
+    (button (@ (click ,(lambda (event)
+                            (set! *template* template-ascii-art)
+                            (render))))
+                "Ascii art")
     (div (@ (id "application")) ,(template))))
 
 (define (render)
@@ -145,6 +149,22 @@
                              (set-element-value! input "")
                              (render))))))
             "Add task")))
+
+
+;; render ascii art
+(define (template-ascii-art)
+  (define ink-script '(
+                       "(\\                         "
+                       "\\'\\                        "
+                       " \\'\\     __________        "
+                       " / '|   ()_________)       "
+                       " \\ '/    \\ ~~~~~~~~ \\      "
+                       "   \\       \\ ~~~~~~   \\    "
+                       "   ==).      \\__________\\  "
+                       "  (__)       ()__________) "
+                       ))
+  `(pre ,(string-join ink-script "\n")))
+
 
 ;; Main
 (set! *template* template-task)
