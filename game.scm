@@ -171,7 +171,8 @@
                   (begin
                     ((timeout-function-func i))
                     (set-timeout-function-countdown! i (timeout-function-interval i))
-                    (render))
+                    (if (equal? *template* template-click)
+                        (render)))
                   (set-timeout-function-countdown! i (- (timeout-function-countdown i) 1))))
             *update-list*)
   (timeout update-callback dt))
