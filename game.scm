@@ -46,6 +46,10 @@
                             (set! *template* template-ascii-art)
                             (render))))
                 "Ascii art")
+    (button (@ (click ,(lambda (event)
+                            (set! *template* template-farm)
+                            (render))))
+                "Farm")
     (div (@ (id "application")) ,(template))))
 
 (define (render)
@@ -165,6 +169,43 @@
                        ))
   `(pre ,(string-join ink-script "\n")))
 
+;; render farm
+(define (template-farm)
+  (define (wrap-line line title)
+    `(div (@ (style "font-family: monospace;
+                     white-space: pre;     
+                     line-height: 2;        
+                     cursor: default;
+                     width: fit-content;")     
+             (title ,title))
+          ,line))
+  
+  `(div (@ (style "position: relative;
+                   width: fit-content;"))     
+        ,(wrap-line "      /\\      " "Farm Warehouse ")
+        ,(wrap-line "     /  \\     " "Farm Warehouse ")
+        ,(wrap-line "    /____\\    " "Farm Warehouse ")
+        ,(wrap-line "    |    |    " "Farm Warehouse ")
+        ,(wrap-line "  __|    |__  " "Farm Warehouse ")
+        ,(wrap-line " |    __    | " "Farm Warehouse ")
+        ,(wrap-line " |[]      []| " "Farm Warehouse ")
+        ,(wrap-line " |__________| " "Farm Warehouse ")
+     (button (@ (style "position: absolute;
+                       top: 10px;         
+                       left: 10%;
+                       transform: translateX(-50%);
+                       width: 30px;
+                       height: 40px;
+                       padding: 0;
+                       font-family: monospace;
+                       background: #8b4513;  
+                       border: 1px solid #654321;
+                       color: #deb887;
+                       cursor: pointer;")
+                (click ,(lambda (event)
+                         (dprint "Door clicked!")
+                         )))
+             "[]"))) 
 
 ;; Main
 (set! *template* template-task)
