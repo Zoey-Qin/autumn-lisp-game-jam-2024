@@ -174,22 +174,45 @@
   (define (wrap-line line title)
     `(div (@ (style "font-family: monospace;
                      white-space: pre;     
-                     line-height: 2;        
+                     line-height: 1。5;        
                      cursor: default;
-                     width: fit-content;")     
+                     width: fit-content;    
+                     margin: 0 auto;")     
              (title ,title))
           ,line))
   
+  ;; 特殊处理窗户行，将左边的窗户变成按钮
+  (define (wrap-window-line)
+    `(div (@ (style "font-family: monospace;
+                     white-space: pre;     
+                     line-height: 1;        
+                     cursor: default;
+                     width: fit-content;    
+                     margin: 0 auto;")     
+             (title "Farm Warehouse - Windows"))
+          " |"
+          (button (@ (style "font-family: monospace;
+                            background: none;
+                            border: none;
+                            padding: 0;
+                            cursor: pointer;
+                            color: inherit;")
+                     (click ,(lambda (event)
+                              (dprint "Left window clicked!"))))
+                  "[]")
+          "      []| "))
+  
   `(div (@ (style "position: relative;
-                   width: fit-content;"))     
-        ,(wrap-line "      /\\      " "Farm Warehouse ")
-        ,(wrap-line "     /  \\     " "Farm Warehouse ")
-        ,(wrap-line "    /____\\    " "Farm Warehouse ")
-        ,(wrap-line "    |    |    " "Farm Warehouse ")
-        ,(wrap-line "  __|    |__  " "Farm Warehouse ")
-        ,(wrap-line " |    __    | " "Farm Warehouse ")
-        ,(wrap-line " |[]      []| " "Farm Warehouse ")
-        ,(wrap-line " |__________| " "Farm Warehouse ")
+                   width: fit-content;    
+                   margin: 0 auto;"))     
+        ,(wrap-line "      /\\      " "Farm Warehouse - Roof Top")
+        ,(wrap-line "     /  \\     " "Farm Warehouse - Upper Roof")
+        ,(wrap-line "    /____\\    " "Farm Warehouse - Lower Roof")
+        ,(wrap-line "    |    |    " "Farm Warehouse - Upper Wall")
+        ,(wrap-line "  __|    |__  " "Farm Warehouse - Middle Wall")
+        ,(wrap-line " |    __    | " "Farm Warehouse - Door Frame")
+        ,(wrap-window-line)  ; 使用特殊的窗户行处理函数
+        ,(wrap-line " |__________| " "Farm Warehouse - Foundation")
      (button (@ (style "position: absolute;
                        top: 10px;         
                        left: 10%;
